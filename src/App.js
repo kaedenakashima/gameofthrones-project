@@ -1,17 +1,32 @@
 import React, { Component } from 'react';
-import './App.css';
+import classes from './App.css';
 import Person from './Person/Person';
 import Logo from './gameofthrones_logo.jpeg'
 import Actor1 from './sophia_turner.jpg'
 import Actor2 from './maisie_williams.jpg'
 import Actor3 from './emilia_clarke.jpg'
-import { Button } from '@material-ui/core'
+// import { Button } from '@material-ui/core'
 import UserInput from './UserInput/UserInput'
 import UserOutput from './UserOutput/UserOutput'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import Validation from './Validation/Validation'
+import Char from './Char/Char'
+//import styled from 'styled-components';
+
+// const StyledButton = styled.button`
+//   background-color: ${props => props.alt ? 'red' : 'green'};
+//   font: inherit;
+//   border: 1px solid black;
+//   padding: 8px;
+//   cursor: pointer;
+
+//   &:hover {
+//     background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
+//     color: black;
+//   }
+// `;
 
 class App extends Component {
-
   state = {
     persons: [
       { id: '12451695', name: 'Emilia Clarke', actingName: 'Daenerys Targaryen' },
@@ -20,9 +35,20 @@ class App extends Component {
     ],
     otherState: 'some other value',
     username: 'supermax',
-    showPersons: false
+    showPersons: false,
+    userInput: ''
   }
 
+  inputChangedHandler = (event) => {
+    this.setState({ userInput: event.target.value });
+  }
+
+  deleteCharHandler = (index) => {
+    const text = this.state.userInput.split('');
+    text.splice(index, 1);
+    const updatedText = text.join('');
+    this.setState({ userInput: updatedText });
+  }
   // switchNameHandler = (newName) => {
   //   //console.log('Was clicked!');
   //   // X this.state.persons[0].name = 'Katie2'
@@ -70,16 +96,36 @@ class App extends Component {
     this.setState({ showPersons: !doesShow })
   }
 
-  render() {
-    const style = {
-      backggrounColor: 'white',
-      font: 'inherit',
-      border: '1px solid black',
-      padding: '8px',
-      cursor: 'pointer'
-    }
+  deleteCharHandler = (index) => {
+    const text = this.state.userInput.split('');
+    text.splice(index, 1);
+    const updatedText = text.join('');
+    this.setState({ userInput: updatedText });
+  }
 
-    let persons = null;
+  render() {
+    // const style = {
+    //   backgroundColor: 'white',
+    //   font: 'inherit',
+    //   border: '1px solid black',
+    //   padding: '8px',
+    //   cursor: 'pointer',
+    //   ':hover': {
+    //     backgroundColor: 'lightgreen',
+    //     color: 'black'
+    //   }
+    // };
+
+    var persons = null;
+    var btnClass = [classes.Button];
+
+    const charList = this.state.userInput.split('').map((ch, index) => {
+      return <Char
+        character={ch}
+        key={index}
+        clicked={() => this.deleteCharHandler(index)}
+      />
+    });
 
     if (this.state.showPersons) {
       persons = (
@@ -88,7 +134,7 @@ class App extends Component {
             return <Person
               click={() => this.deletePersonHandler(index)}
               name={person.name}
-              age={person.age}
+              actingName={person.actingName}
               key={person.id}
               changed={(event) => this.nameChangedHandler(event, person.id)}
             />
@@ -109,20 +155,41 @@ class App extends Component {
           ><img src={Actor1} alt='Sophie Turner' style={{ width: '5em' }} /></Person> */}
         </div>
       );
+
+      btnClass.push(classes.Red);
+
+      // style.backgroundColor = 'grey';
+      // style[':hover'] = {
+      //   backgroundColor: 'salmon',
+      //   color: 'black'
+      // }
     }
+
+    // var assignedClasses = ['red', 'bold'].join(' ');
+    var assignedClasses = []
+    if (this.state.persons.length <= 2) {
+      assignedClasses.push(classes.red); //assignedClasses = ['red']
+    }
+    if (this.state.persons.length <= 1) {
+      assignedClasses.push(classes.bold); //assignedClasses = ['red', 'bold']
+    }
+
     //jsx
     return (
-      <div className='App'>
+      <div className={classes.App}>
         <img src={Logo} style={{ width: '30em' }} alt='game of thrones' />
         <h1>Main Cast</h1>
-        <p>Starring</p>
-        <Button
-          variant="contained"
-          color="primary"
-          style={style}
+        <p className={assignedClasses.join(' ')}>Starring</p>
+        <button
+          //className={btnClass.join(' ')}
+          className={classes.Button}
+          // variant="contained"
+          // color="primary"
+          // style={style}
           onClick={this.togglePersonsHandler}
-        >See the cast <ArrowForwardIosIcon style={{ marginLeft: '2px', fontSize: '10px' }} />
-        </Button>
+        >
+          See the cast <ArrowForwardIosIcon style={{ marginLeft: '2px', fontSize: '10px' }} />
+        </button>
         <br />
         {persons}
         <UserInput
@@ -133,12 +200,20 @@ class App extends Component {
         <UserOutput userName={this.state.username} />
         <UserOutput userName='aaaa' />
         <hr />
-        <input type='text' onChange={} />
+        <input
+          type='text'
+          onChange={this.inputChangedHandler}
+          value={this.state.userInput}
+        />
+        <p>{this.state.userInput}</p>
+        <Validation inputLength={this.state.userInput.length} />
+        {charList}
       </div>
     );
     //return React.createElement('div', {className: App }, React.createElement('h1', null, 'Dooes this work now?'))
+
   }
 }
 
-export default App
+export default App;
 
