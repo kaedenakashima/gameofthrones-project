@@ -11,41 +11,58 @@ import UserOutput from './UserOutput/UserOutput'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 class App extends Component {
+
   state = {
     persons: [
-      { name: 'Emilia Clarke', actingName: 'Daenerys Targaryen' },
-      { name: 'Maisie Williams', actingName: 'Arya Stark' },
-      { name: 'Sophie Turner', actingName: 'Sansa Stark' },
+      { id: '12451695', name: 'Emilia Clarke', actingName: 'Daenerys Targaryen' },
+      { id: '12451696', name: 'Maisie Williams', actingName: 'Arya Stark' },
+      { id: '12451697', name: 'Sophie Turner', actingName: 'Sansa Stark' },
     ],
     otherState: 'some other value',
     username: 'supermax',
     showPersons: false
   }
 
-  switchNameHandler = (newName) => {
-    //console.log('Was clicked!');
-    // X this.state.persons[0].name = 'Katie2'
-    this.setState({
-      persons: [
-        { name: newName, actingName: 'Robb Stark' },
-        { name: 'Maisie Williams', actingName: 'Arya Stark' },
-        { name: 'Sophie Turner', actingName: 'Sansa Stark' },
-      ]
-    })
+  // switchNameHandler = (newName) => {
+  //   //console.log('Was clicked!');
+  //   // X this.state.persons[0].name = 'Katie2'
+  //   this.setState({
+  //     persons: [
+  //       { name: newName, actingName: 'Robb Stark' },
+  //       { name: 'Maisie Williams', actingName: 'Arya Stark' },
+  //       { name: 'Sophie Turner', actingName: 'Sansa Stark' },
+  //     ]
+  //   })
+  // }
+
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    }
+
+    //const person = Object.assiggn({}, this.state.persons[personsIndex])
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({ persons: persons })
   }
 
-  nameChangeHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: event.target.value, actingName: 'Robb Stark' },
-        { name: 'Maisie Williams', actingName: 'Arya Stark' },
-        { name: 'Sophie Turner', actingName: 'Sansa Stark' },
-      ]
-    })
-  }
+  // usernameChangedHandler = (event) => {
+  //   this.setState({ username: event.target.value })
+  // }
 
-  usernameChangedHandler = (event) => {
-    this.setState({ username: event.target.value })
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.slice();
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
   }
 
   togglePersonsHandler = () => {
@@ -67,7 +84,16 @@ class App extends Component {
     if (this.state.showPersons) {
       persons = (
         <div>
-          <Person
+          {this.state.persons.map((person, index) => {
+            return <Person
+              click={() => this.deletePersonHandler(index)}
+              name={person.name}
+              age={person.age}
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)}
+            />
+          })}
+          {/* <Person
             name={this.state.persons[0].name}
             actingName={this.state.persons[0].actingName}
             click={this.switchNameHandler.bind(this, 'Max!')}
@@ -80,7 +106,7 @@ class App extends Component {
           <Person
             name={this.state.persons[2].name}
             actingName={this.state.persons[2].actingName}
-          ><img src={Actor1} alt='Sophie Turner' style={{ width: '5em' }} /></Person>
+          ><img src={Actor1} alt='Sophie Turner' style={{ width: '5em' }} /></Person> */}
         </div>
       );
     }
@@ -106,6 +132,8 @@ class App extends Component {
         <UserOutput userName={this.state.username} />
         <UserOutput userName={this.state.username} />
         <UserOutput userName='aaaa' />
+        <hr />
+        <input type='text' onChange={} />
       </div>
     );
     //return React.createElement('div', {className: App }, React.createElement('h1', null, 'Dooes this work now?'))
