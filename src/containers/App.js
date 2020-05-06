@@ -13,6 +13,10 @@ import Char from '../Char/Char'
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    console.log('[App.js] constructor');
+  }
   state = {
     persons: [
       { id: '12451695', name: 'Emilia Clarke', actingName: 'Daenerys Targaryen' },
@@ -23,6 +27,25 @@ class App extends Component {
     username: 'supermax',
     showPersons: false,
     userInput: ''
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('[App.js] getDrivedStateFromProps', props);
+    return state;
+  }
+
+  componentDidMount() {
+    console.log('[App.js] componentDidMount');
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[App.js] shouldComponentUpdate');
+    return true;
+  }
+
+  componentDidUpdate() {
+    console.log('[App.js] componentDidUpdate');
+
   }
 
   inputChangedHandler = (event) => {
@@ -72,6 +95,7 @@ class App extends Component {
   }
 
   render() {
+    console.log('[App.js] render')
     var persons = null;
 
     const charList = this.state.userInput.split('').map((ch, index) => {
@@ -83,11 +107,13 @@ class App extends Component {
     });
 
     if (this.state.showPersons) {
-      persons = <Persons
-        persons={this.state.persons}
-        clicked={this.deletePersonHandler}
-        changed={this.nameChangedHandler}
-      />
+      persons = (
+        <Persons
+          persons={this.state.persons}
+          clicked={this.deletePersonHandler}
+          changed={this.nameChangedHandler}
+        />
+      )
       {/* {this.state.persons.map((person, index) => {
             return <ErrorBoundary key={person.id}>
               <Person
@@ -117,8 +143,8 @@ class App extends Component {
     //jsx
     return (
       <div className="App">
-        {/* <br /> */}
         <Cockpit
+          title={this.props.appTitle}
           showPersons={this.state.showPersons} persons={this.state.persons}
           clicked={this.togglePersonsHandler}
         />

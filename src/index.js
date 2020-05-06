@@ -8,7 +8,7 @@ import theme from './containers/theme'
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
-    <App />
+    <App appTitle='Cast List' />
   </ThemeProvider>,
   document.getElementById('root')
 );
