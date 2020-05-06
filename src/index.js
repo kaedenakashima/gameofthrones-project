@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './containers/App';
 import * as serviceWorker from './serviceWorker';
 import { ThemeProvider } from '@material-ui/core/styles';
-import theme from './theme'
+import theme from './containers/theme'
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

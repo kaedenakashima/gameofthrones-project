@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import './App.css';
-import Person from './Person/Person';
-import Logo from './gameofthrones_logo.jpeg'
+import Person from '../components/Persons/Person/Person';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
 import Actor1 from './sophia_turner.jpg'
 import Actor2 from './maisie_williams.jpg'
 import Actor3 from './emilia_clarke.jpg'
-import UserInput from './UserInput/UserInput'
-import UserOutput from './UserOutput/UserOutput'
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import Validation from './Validation/Validation'
-import Char from './Char/Char'
-import ErrorBoundary from './ErrorBoundary/ErrorBoundary'
+import UserInput from '../components/UserInput/UserInput'
+import UserOutput from '../components/UserOutput/UserOutput'
+import Validation from '../components/Validation/Validation'
+import Char from '../Char/Char'
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
 
 class App extends Component {
   state = {
@@ -83,9 +83,12 @@ class App extends Component {
     });
 
     if (this.state.showPersons) {
-      persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
+      persons = <Persons
+        persons={this.state.persons}
+        clicked={this.deletePersonHandler}
+        changed={this.nameChangedHandler}
+      />
+      {/* {this.state.persons.map((person, index) => {
             return <ErrorBoundary key={person.id}>
               <Person
                 click={() => this.deletePersonHandler(index)}
@@ -94,8 +97,8 @@ class App extends Component {
                 changed={(event) => this.nameChangedHandler(event, person.id)}
               />
             </ErrorBoundary>
-          })}
-          {/* <Person
+          })} */}
+      {/* <Person
             name={this.state.persons[0].name}
             actingName={this.state.persons[0].actingName}
             click={this.switchNameHandler.bind(this, 'Max!')}
@@ -109,32 +112,16 @@ class App extends Component {
             name={this.state.persons[2].name}
             actingName={this.state.persons[2].actingName}
           ><img src={Actor1} alt='Sophie Turner' style={{ width: '5em' }} /></Person> */}
-        </div>
-      );
-
-    }
-
-    var assignedClasses = []
-    if (this.state.persons.length <= 2) {
-      assignedClasses.push("red"); //assignedClasses = ['red']
-    }
-    if (this.state.persons.length <= 1) {
-      assignedClasses.push("bold"); //assignedClasses = ['red', 'bold']
     }
 
     //jsx
     return (
       <div className="App">
-        <img src={Logo} style={{ width: '30em' }} alt='game of thrones' />
-        <h1>Main Cast</h1>
-        <p className={assignedClasses.join(' ')}>Starring</p>
-        <button
-          className="Button"
-          onClick={this.togglePersonsHandler}
-        >
-          See the cast <ArrowForwardIosIcon style={{ marginLeft: '2px', fontSize: '10px' }} />
-        </button>
-        <br />
+        {/* <br /> */}
+        <Cockpit
+          showPersons={this.state.showPersons} persons={this.state.persons}
+          clicked={this.togglePersonsHandler}
+        />
         {persons}
         <UserInput
           changed={this.nameChangedHandler}
