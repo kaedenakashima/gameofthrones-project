@@ -1,30 +1,16 @@
 import React, { Component } from 'react';
-import classes from './App.css';
+import './App.css';
 import Person from './Person/Person';
 import Logo from './gameofthrones_logo.jpeg'
 import Actor1 from './sophia_turner.jpg'
 import Actor2 from './maisie_williams.jpg'
 import Actor3 from './emilia_clarke.jpg'
-// import { Button } from '@material-ui/core'
 import UserInput from './UserInput/UserInput'
 import UserOutput from './UserOutput/UserOutput'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import Validation from './Validation/Validation'
 import Char from './Char/Char'
-//import styled from 'styled-components';
-
-// const StyledButton = styled.button`
-//   background-color: ${props => props.alt ? 'red' : 'green'};
-//   font: inherit;
-//   border: 1px solid black;
-//   padding: 8px;
-//   cursor: pointer;
-
-//   &:hover {
-//     background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
-//     color: black;
-//   }
-// `;
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary'
 
 class App extends Component {
   state = {
@@ -49,17 +35,6 @@ class App extends Component {
     const updatedText = text.join('');
     this.setState({ userInput: updatedText });
   }
-  // switchNameHandler = (newName) => {
-  //   //console.log('Was clicked!');
-  //   // X this.state.persons[0].name = 'Katie2'
-  //   this.setState({
-  //     persons: [
-  //       { name: newName, actingName: 'Robb Stark' },
-  //       { name: 'Maisie Williams', actingName: 'Arya Stark' },
-  //       { name: 'Sophie Turner', actingName: 'Sansa Stark' },
-  //     ]
-  //   })
-  // }
 
   nameChangedHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => {
@@ -70,8 +45,6 @@ class App extends Component {
       ...this.state.persons[personIndex]
     }
 
-    //const person = Object.assiggn({}, this.state.persons[personsIndex])
-
     person.name = event.target.value;
 
     const persons = [...this.state.persons];
@@ -80,12 +53,7 @@ class App extends Component {
     this.setState({ persons: persons })
   }
 
-  // usernameChangedHandler = (event) => {
-  //   this.setState({ username: event.target.value })
-  // }
-
   deletePersonHandler = (personIndex) => {
-    // const persons = this.state.persons.slice();
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
     this.setState({ persons: persons });
@@ -104,20 +72,7 @@ class App extends Component {
   }
 
   render() {
-    // const style = {
-    //   backgroundColor: 'white',
-    //   font: 'inherit',
-    //   border: '1px solid black',
-    //   padding: '8px',
-    //   cursor: 'pointer',
-    //   ':hover': {
-    //     backgroundColor: 'lightgreen',
-    //     color: 'black'
-    //   }
-    // };
-
     var persons = null;
-    var btnClass = [classes.Button];
 
     const charList = this.state.userInput.split('').map((ch, index) => {
       return <Char
@@ -131,13 +86,14 @@ class App extends Component {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return <Person
-              click={() => this.deletePersonHandler(index)}
-              name={person.name}
-              actingName={person.actingName}
-              key={person.id}
-              changed={(event) => this.nameChangedHandler(event, person.id)}
-            />
+            return <ErrorBoundary key={person.id}>
+              <Person
+                click={() => this.deletePersonHandler(index)}
+                name={person.name}
+                actingName={person.actingName}
+                changed={(event) => this.nameChangedHandler(event, person.id)}
+              />
+            </ErrorBoundary>
           })}
           {/* <Person
             name={this.state.persons[0].name}
@@ -156,36 +112,24 @@ class App extends Component {
         </div>
       );
 
-      btnClass.push(classes.Red);
-
-      // style.backgroundColor = 'grey';
-      // style[':hover'] = {
-      //   backgroundColor: 'salmon',
-      //   color: 'black'
-      // }
     }
 
-    // var assignedClasses = ['red', 'bold'].join(' ');
     var assignedClasses = []
     if (this.state.persons.length <= 2) {
-      assignedClasses.push(classes.red); //assignedClasses = ['red']
+      assignedClasses.push("red"); //assignedClasses = ['red']
     }
     if (this.state.persons.length <= 1) {
-      assignedClasses.push(classes.bold); //assignedClasses = ['red', 'bold']
+      assignedClasses.push("bold"); //assignedClasses = ['red', 'bold']
     }
 
     //jsx
     return (
-      <div className={classes.App}>
+      <div className="App">
         <img src={Logo} style={{ width: '30em' }} alt='game of thrones' />
         <h1>Main Cast</h1>
         <p className={assignedClasses.join(' ')}>Starring</p>
         <button
-          //className={btnClass.join(' ')}
-          className={classes.Button}
-          // variant="contained"
-          // color="primary"
-          // style={style}
+          className="Button"
           onClick={this.togglePersonsHandler}
         >
           See the cast <ArrowForwardIosIcon style={{ marginLeft: '2px', fontSize: '10px' }} />
@@ -193,7 +137,7 @@ class App extends Component {
         <br />
         {persons}
         <UserInput
-          changed={this.usernameChangedHandler}
+          changed={this.nameChangedHandler}
           currentName={this.state.username}
         />
         <UserOutput userName={this.state.username} />
