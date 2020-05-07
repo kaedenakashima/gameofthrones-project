@@ -11,6 +11,7 @@ import UserOutput from '../components/UserOutput/UserOutput'
 import Validation from '../components/Validation/Validation'
 import Char from '../Char/Char'
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
+import { ThemeConsumer } from 'styled-components';
 
 class App extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class App extends Component {
     otherState: 'some other value',
     username: 'supermax',
     showPersons: false,
+    showCockpit: true,
     userInput: ''
   }
 
@@ -143,11 +145,15 @@ class App extends Component {
     //jsx
     return (
       <div className="App">
-        <Cockpit
+        <button onClick={() => {
+          this.setState({ showCockpit: false })
+        }}>Remove Cockpit</button>
+        {this.state.showCockpit ? (<Cockpit
           title={this.props.appTitle}
           showPersons={this.state.showPersons} persons={this.state.persons}
           clicked={this.togglePersonsHandler}
-        />
+        />)
+          : null}
         {persons}
         <UserInput
           changed={this.nameChangedHandler}
@@ -165,7 +171,7 @@ class App extends Component {
         <p>{this.state.userInput}</p>
         <Validation inputLength={this.state.userInput.length} />
         {charList}
-      </div>
+      </div >
     );
     //return React.createElement('div', {className: App }, React.createElement('h1', null, 'Dooes this work now?'))
 

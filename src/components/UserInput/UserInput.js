@@ -1,7 +1,7 @@
 import React from 'react'
 import TextField from '@material-ui/core/TextField';
 
-const userInput = (props) => {
+const UserInput = (props) => {
     return <TextField
         type='text'
         onChange={props.changed}
@@ -11,4 +11,4 @@ const userInput = (props) => {
     />;
 };
 
-export default userInput
+export default UserInput

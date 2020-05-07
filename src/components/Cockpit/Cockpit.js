@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Cockpit.css';
 import Logo from './gameofthrones_logo.jpeg'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { DialogTitle } from '@material-ui/core';
 
-const cockpit = (props) => {
+const Cockpit = (props) => {
+    useEffect(() => {
+        console.log('[Cockpit.js] useEffect');
+        // Http request...
+        setTimeout(() => {
+            alert('Saved data to cloud!')
+        }, 1000)
+        return () => {
+            console.log('[Cockpit.js] cleanup work in useEffect')
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log('[Cockpit.js] 2nd useEffect');
+        return () => {
+            console.log('[Cockpit.js] cleanup work in 2nd useEffect')
+        }
+    }, []);
+
     const assignedClasses = [];
     let btnClass = ''
-
 
     if (props.showPersons) {
         btnClass = 'Red';
@@ -35,4 +52,4 @@ const cockpit = (props) => {
     );
 };
 
-export default cockpit
+export default Cockpit
