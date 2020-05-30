@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import Person from '../Persons/Person/Person'
 
-export default class Persons extends Component {
+export default class Persons extends PureComponent {
     // static getDerivedStateFromProps(props, state) {
     //     console.log('[Persins.js] getDerivedStateFromProps');
     //     return state;
@@ -11,15 +11,20 @@ export default class Persons extends Component {
     //     console.lpg('[Persons.js] componentWillReceiveProps', props)
     // }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log('[Persons.js] shouldComponentUpdate')
-        if (nextProps.persons !== this.props.persons) {
-            return true;
-        } else {
-            return false;
-        }
-        // return true;
-    }
+    // use can manually use this instead of PureComponent
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     console.log('[Persons.js] shouldComponentUpdate')
+    //     if (
+    //         nextProps.persons !== this.props.persons ||
+    //         nextProps.changed !== this.props.changed ||
+    //         nextProps.clicked !== this.props.clicked
+    //     ) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    //     // return true;
+    // }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
         console.log('[Persons.js] getSnapshotBeforeUpdate');
@@ -37,16 +42,17 @@ export default class Persons extends Component {
 
     render() {
         console.log('[Persoons.js] rendering...');
-        return this.props.persons.map((person, index) => {
+        return (this.props.persons.map((person, index) => {
             return (
                 <Person
                     click={() => this.props.clicked(index)}
                     name={person.name}
-                    age={person.age}
+                    actingName={person.actingName}
                     key={person.id}
                     changed={(event) => this.props.changed(event, person.id)}
                 />
             )
-        });
+        })
+        );
     }
 }

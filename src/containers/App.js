@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Person from '../components/Persons/Person/Person';
+// import Person from '../components/Persons/Person/Person';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
 import Actor1 from './sophia_turner.jpg'
@@ -12,6 +12,10 @@ import Validation from '../components/Validation/Validation'
 import Char from '../Char/Char'
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
 import { ThemeConsumer } from 'styled-components';
+import WithClass from '../hoc/WithClass'
+import Aux from '../hoc/Aux'
+import AuthContext from '../context/auth-context';
+import Persons2 from './Persons2'
 
 class App extends Component {
   constructor(props) {
@@ -23,12 +27,17 @@ class App extends Component {
       { id: '12451695', name: 'Emilia Clarke', actingName: 'Daenerys Targaryen' },
       { id: '12451696', name: 'Maisie Williams', actingName: 'Arya Stark' },
       { id: '12451697', name: 'Sophie Turner', actingName: 'Sansa Stark' },
+      { id: '12451698', name: 'James Cosmo', actingName: 'citizen 1' },
+      { id: '12451699', name: 'Peter Vaughan', actingName: 'citizen 2' },
+      { id: '1245100', name: 'Brian Fortune', actingName: 'citizen 3' },
     ],
     otherState: 'some other value',
     username: 'supermax',
     showPersons: false,
     showCockpit: true,
-    userInput: ''
+    userInput: '',
+    changeCounter: 0,
+    authenticated: false
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -75,8 +84,13 @@ class App extends Component {
     const persons = [...this.state.persons];
     persons[personIndex] = person;
 
-    this.setState({ persons: persons })
-  }
+    this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1
+      }
+    });
+  };
 
   deletePersonHandler = (personIndex) => {
     const persons = [...this.state.persons];
@@ -94,6 +108,10 @@ class App extends Component {
     text.splice(index, 1);
     const updatedText = text.join('');
     this.setState({ userInput: updatedText });
+  }
+
+  loginHandler = () => {
+    this.setState({ authenticated: true })
   }
 
   render() {
@@ -114,6 +132,7 @@ class App extends Component {
           persons={this.state.persons}
           clicked={this.deletePersonHandler}
           changed={this.nameChangedHandler}
+          isAuthenticated={this.state.authenticated}
         />
       )
       {/* {this.state.persons.map((person, index) => {
@@ -145,33 +164,44 @@ class App extends Component {
     //jsx
     return (
       <div className="App">
-        <button onClick={() => {
-          this.setState({ showCockpit: false })
-        }}>Remove Cockpit</button>
-        {this.state.showCockpit ? (<Cockpit
-          title={this.props.appTitle}
-          showPersons={this.state.showPersons} persons={this.state.persons}
-          clicked={this.togglePersonsHandler}
-        />)
-          : null}
-        {persons}
-        <UserInput
-          changed={this.nameChangedHandler}
-          currentName={this.state.username}
-        />
-        <UserOutput userName={this.state.username} />
-        <UserOutput userName={this.state.username} />
-        <UserOutput userName='aaaa' />
-        <hr />
-        <input
-          type='text'
-          onChange={this.inputChangedHandler}
-          value={this.state.userInput}
-        />
-        <p>{this.state.userInput}</p>
-        <Validation inputLength={this.state.userInput.length} />
-        {charList}
-      </div >
+        <Aux>
+          <button onClick={() => {
+            this.setState({ showCockpit: false })
+          }}>Remove Title</button>
+          <AuthContext.Provider
+            value={{
+              authenticated: this.state.authenticated,
+              login: this.loginHandler
+            }}
+          >
+            {this.state.showCockpit ? (
+              <Cockpit
+                title={this.props.appTitle}
+                showPersons={this.state.showPersons}
+                personsLength={this.state.persons.length}
+                clicked={this.togglePersonsHandler}
+              />
+            ) : null}
+            {persons}
+            <UserInput
+              changed={this.nameChangedHandler}
+              currentName={this.state.username}
+            />
+            <UserOutput userName={this.state.username} />
+            <UserOutput userName={this.state.username} />
+            <UserOutput userName='user name' />
+            <input
+              type='text'
+              onChange={this.inputChangedHandler}
+              value={this.state.userInput}
+            />
+            <p>{this.state.userInput}</p>
+            <Validation inputLength={this.state.userInput.length} />
+            {charList}
+          </AuthContext.Provider>
+          <Persons2 />
+        </Aux>
+      </div>
     );
     //return React.createElement('div', {className: App }, React.createElement('h1', null, 'Dooes this work now?'))
 

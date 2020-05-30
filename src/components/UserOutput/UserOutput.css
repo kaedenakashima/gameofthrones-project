@@ -1,8 +1,11 @@
 .UserOutput {
-    width: 60%;
+    width: 150px;
     padding: 16px;
     margin: 16px;
-    border: 2px solid black;
-    background-color: #ccc;
-    text-align: center;
+    border: 1px solid black;
+    background-color: #5d2350;
+    display: inline-block;
+    font-size: 12px;
+    border-radius: .2em;
+    color: white;
 }
